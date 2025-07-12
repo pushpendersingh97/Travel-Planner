@@ -1,6 +1,7 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { fetchWeatherData } from '@/utils/weatherService';
+import axios from 'axios';
 import { DEFAULT_CITY, OPENWEATHER_BASE_URL, OPENWEATHER_API_KEY } from '@/utils/constants';
 
 export default function useWeather() {
@@ -8,24 +9,35 @@ export default function useWeather() {
   const [cityName, setCityName] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
-  const buildWeatherUrl = (city) =>
-    `${OPENWEATHER_BASE_URL}/weather?q=${city}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+  const buildWeatherUrl = (query) =>
+    `${OPENWEATHER_BASE_URL}/weather?${query}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+
+  const parseWeatherData = (data) => ({
+    temp: data.main.temp,
+    condition: data.weather[0].description,
+    humidity: data.main.humidity,
+    wind: data.wind.speed,
+    city: data.name,
+    icon: data.weather[0].icon,
+  });
+
+  const fetchWeatherByCity = async (city) => {
+    const url = buildWeatherUrl(`q=${city}`);
+    const { data } = await axios.get(url);
+    return parseWeatherData(data);
+  };
+
+  const fetchWeatherByCoords = async (lat, lon) => {
+    const url = buildWeatherUrl(`lat=${lat}&lon=${lon}`);
+    const { data } = await axios.get(url);
+    return parseWeatherData(data);
+  };
 
   const fetchFallbackWeather = async () => {
     try {
-      const res = await fetch(buildWeatherUrl(DEFAULT_CITY));
-      const data = await res.json();
-
-      const fallbackWeather = {
-        temp: data.main.temp,
-        condition: data.weather[0].description,
-        humidity: data.main.humidity,
-        wind: data.wind.speed,
-        city: data.name,
-      };
-
+      const fallbackWeather = await fetchWeatherByCity(DEFAULT_CITY);
       setWeather(fallbackWeather);
-      setCityName(data.name);
+      setCityName(fallbackWeather.city);
     } catch (err) {
       console.error('Fallback weather fetch failed:', err);
     }
@@ -33,19 +45,9 @@ export default function useWeather() {
 
   const handleSearch = async (city) => {
     try {
-      const res = await fetch(buildWeatherUrl(city));
-      const data = await res.json();
-
-      const searchedWeather = {
-        temp: data.main.temp,
-        condition: data.weather[0].description,
-        humidity: data.main.humidity,
-        wind: data.wind.speed,
-        city: data.name,
-      };
-
+      const searchedWeather = await fetchWeatherByCity(city);
       setWeather(searchedWeather);
-      setCityName(data.name);
+      setCityName(searchedWeather.city);
       setHasSearched(true);
     } catch (err) {
       console.error('Search weather fetch failed:', err);
@@ -57,9 +59,14 @@ export default function useWeather() {
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
           const { latitude, longitude } = pos.coords;
-          const weatherInfo = await fetchWeatherData(latitude, longitude);
-          setWeather(weatherInfo);
-          setCityName(weatherInfo.city);
+          try {
+            const locationWeather = await fetchWeatherByCoords(latitude, longitude);
+            setWeather(locationWeather);
+            setCityName(locationWeather.city);
+          } catch (err) {
+            console.warn('Geolocation fetch failed, using fallback:', err);
+            fetchFallbackWeather();
+          }
         },
         (err) => {
           console.warn('Geolocation failed, using fallback:', err.message);

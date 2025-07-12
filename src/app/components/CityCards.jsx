@@ -5,6 +5,9 @@ const mockPlaces = [
   { name: 'Central Park', description: 'Famous green space.', image: '/images/park.jpg' },
   { name: 'Historic Museum', description: 'Explore history.', image: '/images/museum.jpg' },
   { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
+  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
+  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
+  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
 ];
 
 export default function CityCards({ city }) {

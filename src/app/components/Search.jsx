@@ -29,7 +29,7 @@ export default function Search({ onSearch, isInline = false }) {
   return (
     <div
       className={`relative w-full transition-all duration-500 ease-in-out ${
-        isInline ? 'max-w-md' : 'max-w-xl mx-auto mt-32'
+        isInline ? 'max-w-md' : 'max-w-xl mx-auto'
       }`}
     >
       <input

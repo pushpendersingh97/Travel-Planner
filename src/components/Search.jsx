@@ -1,35 +1,33 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const mockCities = [
-  "Delhi",
-  "Mumbai",
-  "Bangalore",
-  "Chennai",
-  "Kolkata",
-  "New York",
-  "London",
-  "Paris",
-  "Tokyo",
-  "Berlin",
+  'Delhi',
+  'Mumbai',
+  'Bangalore',
+  'Chennai',
+  'Kolkata',
+  'New York',
+  'London',
+  'Paris',
+  'Tokyo',
+  'Berlin',
 ];
 
 export default function Search() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
-    if (query.trim() === "") {
+    if (query.trim() === '') {
       setResults([]);
       setShowDropdown(false);
       return;
     }
 
-    const filtered = mockCities.filter((city) =>
-      city.toLowerCase().includes(query.toLowerCase())
-    );
+    const filtered = mockCities.filter((city) => city.toLowerCase().includes(query.toLowerCase()));
 
     setResults(filtered);
     setShowDropdown(filtered.length > 0);
@@ -54,9 +52,7 @@ export default function Search() {
         {showDropdown && (
           <ul
             className={`absolute top-full mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md shadow z-10 max-h-60 overflow-y-auto transition-all duration-200 transform ${
-              showDropdown
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-95 pointer-events-none"
+              showDropdown ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
             }`}
           >
             {results.map((city, index) => (

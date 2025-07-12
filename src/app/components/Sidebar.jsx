@@ -24,7 +24,6 @@ export default function Sidebar({ weather }) {
           <span>📍</span>
           <h2 className="font-semibold text-lg">{weather.city}</h2>
         </div>
-        {/* <div className="bg-yellow-300 rounded-full w-6 h-6 shadow-sm"></div> */}
       </div>
 
       <div className="flex justify-center mb-2 relative z-10">

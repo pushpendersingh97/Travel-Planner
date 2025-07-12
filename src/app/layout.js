@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: 'Travel Planner',
-  description: 'Travel Planner',
+  description: 'Plan your travel with live weather and city insights.',
 };
 
 export default function RootLayout({ children }) {

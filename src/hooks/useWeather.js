@@ -5,7 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { DEFAULT_CITY, OPENWEATHER_BASE_URL, OPENWEATHER_API_KEY } from '@/utils/constants';
 
-export default function useWeather() {
+export default function useWeather({ city = '' } = {}) {
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [cityName, setCityName] = useState('');
@@ -26,6 +26,7 @@ export default function useWeather() {
 
   const parseForecast = (data) => {
     const grouped = {};
+
     data.list.forEach((entry) => {
       const date = entry.dt_txt.split(' ')[0];
       if (!grouped[date]) grouped[date] = [];
@@ -60,6 +61,25 @@ export default function useWeather() {
   const fetchWeatherByCity = async (city) => fetchWeather(`q=${city}`);
   const fetchForecastByCity = async (city) => fetchForecast(`q=${city}`);
 
+  const fetchAllWeatherData = async (cityQuery) => {
+    setLoading(true);
+    try {
+      const [current, forecastData] = await Promise.all([
+        fetchWeatherByCity(cityQuery),
+        fetchForecastByCity(cityQuery),
+      ]);
+      setWeather(current);
+      setForecast(forecastData);
+      setCityName(current.city);
+      setHasSearched(true);
+    } catch (err) {
+      toast.error('City not found or API error');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchFallbackWeather = async () => {
     try {
       const [fallbackWeather, fallbackForecast] = await Promise.all([
@@ -77,46 +97,42 @@ export default function useWeather() {
     }
   };
 
-  const handleSearch = async (city) => {
-    if (!city) return;
-    setLoading(true);
-    try {
-      const [searchedWeather, searchedForecast] = await Promise.all([
-        fetchWeatherByCity(city),
-        fetchForecastByCity(city),
-      ]);
-      setWeather(searchedWeather);
-      setForecast(searchedForecast);
-      setCityName(searchedWeather.city);
-      setHasSearched(true);
-    } catch (err) {
-      toast.error('City not found or fetch failed');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = async (cityQuery) => {
+    if (!cityQuery) return;
+    await fetchAllWeatherData(cityQuery);
   };
 
   useEffect(() => {
-    let didCancel = false;
-
-    const init = async () => {
-      try {
-        await fetchFallbackWeather();
-      } catch (err) {
-        toast.error('Initial weather fetch failed');
-        console.error(err);
-        if (!didCancel) setLoading(false);
-      }
-    };
-
-    init();
-
-    return () => {
-      didCancel = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (city) {
+      fetchAllWeatherData(city);
+    } else if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async ({ coords }) => {
+          try {
+            const [locWeather, locForecast] = await Promise.all([
+              fetchWeather(`lat=${coords.latitude}&lon=${coords.longitude}`),
+              fetchForecast(`lat=${coords.latitude}&lon=${coords.longitude}`),
+            ]);
+            setWeather(locWeather);
+            setForecast(locForecast);
+            setCityName(locWeather.city);
+          } catch (err) {
+            console.warn('Geo fetch failed, falling back to default');
+            await fetchFallbackWeather();
+          } finally {
+            setLoading(false);
+          }
+        },
+        async () => {
+          console.warn('Geolocation denied, using fallback');
+          await fetchFallbackWeather();
+        },
+        { timeout: 10000 }
+      );
+    } else {
+      fetchFallbackWeather();
+    }
+  }, [city]);
 
   return {
     weather,

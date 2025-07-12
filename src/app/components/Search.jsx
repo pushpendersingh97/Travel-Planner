@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import useCitySuggestions from '@/hooks/useCitySuggestions';
+import { useRouter } from 'next/navigation';
 
-export default function Search({ onSearch, isInline = false }) {
+export default function Search({ isInline = false }) {
+  const router = useRouter();
+
   const [query, setQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const { suggestions, fetchSuggestions } = useCitySuggestions();
@@ -20,7 +23,7 @@ export default function Search({ onSearch, isInline = false }) {
   const handleSelect = (city) => {
     setQuery(city);
     setShowDropdown(false);
-    onSearch(city);
+    router.push(`/city/${encodeURIComponent(city)}`);
   };
 
   return (

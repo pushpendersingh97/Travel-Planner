@@ -2,12 +2,14 @@
 
 import CityCards from './components/CityCards';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
 import Search from './components/Search';
+
 import useWeather from '@/hooks/useWeather';
+import CurrentWeatherCard from './components/CurrentWeatherCard';
+import ForecastWidget from './components/ForecastWidget';
 
 export default function Home() {
-  const { weather, cityName, hasSearched, handleSearch } = useWeather();
+  const { weather, forecast, cityName, hasSearched, handleSearch, loading } = useWeather();
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-white">
@@ -22,7 +24,12 @@ export default function Home() {
           )}
           {hasSearched && <CityCards city={cityName} />}
         </main>
-        <Sidebar weather={weather} />
+
+        {/* Sidebar with Current Weather + Forecast */}
+        <div className="md:w-80 w-full p-2">
+          <CurrentWeatherCard weather={weather} loading={loading} />
+          <ForecastWidget forecast={forecast} loading={loading} />
+        </div>
       </div>
     </div>
   );

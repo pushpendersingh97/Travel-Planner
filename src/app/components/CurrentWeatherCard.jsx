@@ -2,22 +2,33 @@
 
 import { motion } from 'framer-motion';
 
-export default function Sidebar({ weather }) {
-  if (!weather) return null;
-
-  const iconUrl = `https://openweathermap.org/img/wn/${weather.icon || '10d'}@2x.png`;
+export default function CurrentWeatherCard({ weather, loading }) {
   const date = new Date().toLocaleDateString(undefined, {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
   });
 
+  if (loading || !weather) {
+    return (
+      <div className="p-4 m-4 rounded-3xl bg-gradient-to-br from-blue-400 to-indigo-500 dark:from-blue-800 dark:to-indigo-900 animate-pulse h-[260px]">
+        <div className="h-6 w-24 bg-white/30 rounded mb-4" />
+        <div className="h-20 w-20 bg-white/40 rounded-full mx-auto mb-4" />
+        <div className="h-5 w-32 bg-white/30 rounded mx-auto mb-2" />
+        <div className="h-6 w-16 bg-white/40 rounded mx-auto mb-2" />
+        <div className="h-4 w-20 bg-white/30 rounded mx-auto" />
+      </div>
+    );
+  }
+
+  const iconUrl = `https://openweathermap.org/img/wn/${weather.icon || '10d'}@2x.png`;
+
   return (
-    <motion.aside
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative md:w-72 w-full p-4 m-4 rounded-3xl bg-gradient-to-br from-blue-400 to-indigo-500 dark:from-blue-800 dark:to-indigo-900 text-white shadow-xl overflow-hidden h-full"
+      className="relative p-4 m-4 rounded-3xl bg-gradient-to-br from-blue-400 to-indigo-500 dark:from-blue-800 dark:to-indigo-900 text-white shadow-xl overflow-hidden"
     >
       <div className="flex justify-between items-center mb-2 relative z-10">
         <div className="flex items-center space-x-2">
@@ -48,6 +59,6 @@ export default function Sidebar({ weather }) {
           <p>{weather.humidity}%</p>
         </div>
       </div>
-    </motion.aside>
+    </motion.div>
   );
 }

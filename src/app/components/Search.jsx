@@ -1,24 +1,21 @@
 'use client';
-import { debounce } from '@/utils/debounce';
-import { useEffect, useMemo, useState } from 'react';
 
-const mockCities = ['Delhi', 'Mumbai', 'Bangalore', 'New York', 'Paris'];
+import { useEffect, useState } from 'react';
+import useCitySuggestions from '@/hooks/useCitySuggestions';
 
 export default function Search({ onSearch, isInline = false }) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-
-  const searchCities = debounce((text) => {
-    const filtered = mockCities.filter((city) => city.toLowerCase().includes(text.toLowerCase()));
-    setResults(filtered);
-    setShowDropdown(filtered.length > 0);
-  }, 300);
+  const { suggestions, fetchSuggestions } = useCitySuggestions();
 
   useEffect(() => {
-    if (query.trim()) searchCities(query);
-    else setShowDropdown(false);
-  }, [query]);
+    if (query.trim()) {
+      fetchSuggestions(query);
+      setShowDropdown(true);
+    } else {
+      setShowDropdown(false);
+    }
+  }, [query, fetchSuggestions]);
 
   const handleSelect = (city) => {
     setQuery(city);
@@ -41,7 +38,7 @@ export default function Search({ onSearch, isInline = false }) {
       />
       {showDropdown && (
         <ul className="absolute top-full mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md shadow z-10 max-h-60 overflow-y-auto transition-all duration-200">
-          {results.map((city, index) => (
+          {suggestions.map((city, index) => (
             <li
               key={index}
               className="px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900 cursor-pointer"

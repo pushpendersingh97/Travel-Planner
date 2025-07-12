@@ -1,10 +1,15 @@
-import ThemeToggle from "@/components/ThemeToggle";
-import Image from "next/image";
+import Header from "@/components/Header";
+import Search from "@/components/Search";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-amber-100 dark:bg-black">
-      <ThemeToggle />
+      {/* <Header /> */}
+
+      {/* Search componet */}
+      <Search />  
+
+      {/*  */}
     </div>
   );
 }

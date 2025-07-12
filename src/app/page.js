@@ -3,13 +3,9 @@ import Search from "@/components/Search";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-amber-100 dark:bg-black">
-      {/* <Header /> */}
-
-      {/* Search componet */}
-      <Search />  
-
-      {/*  */}
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      <Header />
+      <Search />
     </div>
   );
 }

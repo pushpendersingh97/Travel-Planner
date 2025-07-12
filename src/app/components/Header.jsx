@@ -10,11 +10,15 @@ export default function Header({ cityName, showSearchInHeader, onSearch }) {
         <Plane className="w-6 h-6 text-blue-500 dark:text-blue-400" />
         {cityName || 'Travel Planner'}
       </div>
+
+      {/* Conditionally render search bar in header, if we have already searched any city */}
       {showSearchInHeader && (
         <div className="w-full md:w-1/2">
           <Search onSearch={onSearch} isInline={true} />
         </div>
       )}
+
+      {/** Theme toggle */}
       <ThemeToggle />
     </header>
   );

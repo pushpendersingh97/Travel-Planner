@@ -115,6 +115,7 @@ export default function useWeather() {
     return () => {
       didCancel = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

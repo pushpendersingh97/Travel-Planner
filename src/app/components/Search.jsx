@@ -1,6 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { debounce } from 'lodash';
+import { debounce } from '@/utils/debounce';
+import { useEffect, useMemo, useState } from 'react';
 
 const mockCities = ['Delhi', 'Mumbai', 'Bangalore', 'New York', 'Paris'];
 

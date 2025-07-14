@@ -64,7 +64,7 @@ Create a `.env.local` file in the root directory:
 
 ```env
 NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key
-NEXT_PUBLIC_FOURSQUARE_API_KEY=your_foursquare_api_key
+FOURSQUARE_API_KEY=your_foursquare_api_key
 ```
 
 ### 4. Run Locally

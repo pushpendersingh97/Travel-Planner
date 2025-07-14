@@ -1,19 +1,23 @@
 'use client';
 import { motion } from 'framer-motion';
-
-const mockPlaces = [
-  { name: 'Central Park', description: 'Famous green space.', image: '/images/park.jpg' },
-  { name: 'Historic Museum', description: 'Explore history.', image: '/images/museum.jpg' },
-  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
-  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
-  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
-  { name: 'Street Market', description: 'Local foods and crafts.', image: '/images/market.jpg' },
-];
+import usePlaces from '@/hooks/usePlaces';
 
 export default function CityCards({ city }) {
+  const { places, loading } = usePlaces(decodeURIComponent(city).split(',')[0]);
+
+  if (loading) {
+    return (
+      <div className="px-4 py-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="h-60 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 py-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {mockPlaces.map((place, i) => (
+      {places.map((place, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, y: 20 }}

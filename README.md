@@ -1,5 +1,3 @@
-Here's a complete `README.md` file for your **Travel Planner App** built using **Next.js**, **Tailwind CSS**, **OpenWeather**, **Foursquare**, and **RestCountries APIs**.
-
 ---
 
 ### 📄 `README.md`

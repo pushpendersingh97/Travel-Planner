@@ -1,6 +1,4 @@
----
 
-### 📄 `README.md`
 
 ````md
 # 🌍 Travel Planner App
